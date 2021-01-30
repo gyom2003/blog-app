@@ -1,0 +1,49 @@
+// Widget blogListHome(){
+  //   return FutureBuilder(
+  //     future: usersHomeReference,
+  //     builder: (_, AsyncSnapshot<dynamic> userdataFromHomedb) {
+  //     switch(userdataFromHomedb.connectionState) {
+  //     //pour eviter le null
+  //     case ConnectionState.none:
+  //       return Container(); 
+  //     case ConnectionState.waiting:
+  //       return Container(); 
+  //     case ConnectionState.active: 
+  //     case ConnectionState.done: 
+      
+  //     if (!newHomeUsers.containsKey('titre')) {
+  //       newHomeUsers = Map<String, String>.from(userdataFromHomedb.data);
+  //     } else {
+  //       _imageUploadWithSuccess(); 
+  //     }
+
+  //     return Container(
+  //       child: usersHomeReference != null ? Column(
+  //         children: <Widget> [
+  //           ListView.builder(
+  //              scrollDirection: Axis.vertical,
+  //              shrinkWrap: true,
+  //              padding: EdgeInsets.symmetric(horizontal: 15),
+  //             itemCount: futuresnapshot.documents.length,
+  //             itemBuilder: (context, index) {
+  //               return BlogTileHome(
+  //                 imageURL: futuresnapshot.documents[index].data['imageURL'],
+  //                 descriptionBlog: futuresnapshot.documents[index].data['description'],
+  //                 numberofQueryBlog: futuresnapshot.documents[index].data['numberofQuery'],
+  //                 pseudonymeBlog: futuresnapshot.documents[index].data['pseudonyme'],
+  //                 titreBlog: futuresnapshot.documents[index].data['titre'],
+  //               ); 
+  //             }
+  //           )
+  //         ]
+  //       )
+  //       : Container(
+  //         alignment: Alignment.center,
+  //         child: CircularProgressIndicator(),
+  //       )
+  //     ); 
+  //   }
+  //   return Container(); 
+  //   },
+  //   );
+  //   }

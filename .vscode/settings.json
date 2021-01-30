@@ -1,0 +1,13 @@
+{
+    "editor.fontFamily": "'DejaVu Sans Mono'",
+    "workbench.colorCustomizations": {
+        "terminal.foreground": "#76D7C4",
+        "terminal.background": "#17202A",
+        "terminal.border": "#000000",
+        "debugConsoleInputIcon.foreground": "#76D7C4",
+        "editor.lineHighlightBorder": "#261d5a8c",
+        "activityBar.background": "#222540",
+        "titleBar.activeBackground": "#2F3359",
+        "titleBar.activeForeground": "#F9F9FC"
+    } //'Fira Code', Consolas, 'Courier New', monospace, 'DejaVu Sans Mono'
+}
