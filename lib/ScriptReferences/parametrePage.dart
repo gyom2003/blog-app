@@ -130,30 +130,6 @@ class _TapBarDataState extends State<TapBarData> {
   }
 
 
-   //bottom notif quand ok
-  void _imageUploadWithSuccess() {
-    showModalBottomSheet(
-      context: context, 
-      builder: (context) {
-        return Column(
-          children: <Widget> [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: ListTile(
-                leading: Icon(Icons.thumb_up_alt),
-                title: Text("tout les fichiers sont upload avec succès"), 
-                onTap: () {
-                  print("ListTile sans fonctionnalitées"); 
-                },
-              ),
-            ), 
-          ],
-        ); 
-      }
-    ); 
-  }
-
-
 
   @override
   Widget build(BuildContext context) {

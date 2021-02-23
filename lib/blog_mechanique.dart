@@ -80,6 +80,48 @@ class _BlogMechState extends State<BlogMech> {
     ); 
   }
 
+   //supprimer ou updtate
+  questionNotification(BuildContext context) {
+    Map<String, String> cloudMapLocal = {
+      "titre": titreonChanged, 
+      "pseudonyme": pseudoonChanged, 
+      "description": descriptiononChanged, 
+      "numberofQuery": numberofQueryScript.toString(), 
+      "imageURL":  "", //à revoire
+    };
+    return AlertDialog(
+        title: Text("Titre AlertDialog"), 
+        content: SingleChildScrollView(
+          child: ListBody(
+            reverse: false,
+            mainAxis: Axis.vertical, 
+            children: <Widget> [
+              Text("Veut tu update ou supprimer les données ?")
+            ],
+            
+          )
+        ),
+        actions: <Widget> [
+          TextButton(
+            child: Text("supprimer"), 
+            onPressed: () {
+              CloudDB.firebaseReference.deleteData();
+            }
+          ),
+           TextButton(
+            child: Text("updtate"), 
+            onPressed: () {
+              CloudDB.firebaseReference.updtateData(cloudMapLocal); 
+            }
+          ), 
+
+        ],
+
+      ); 
+    }
+
+
+
   //pouvoir utiliser la galerie et croper
   Future<void> getImagewithgallerie() async {
     PickedFile image = await picker.getImage(source: ImageSource.gallery);  
@@ -177,6 +219,15 @@ class _BlogMechState extends State<BlogMech> {
   
   }
 
+  void showsupporudtate() {
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      useSafeArea: true,
+      builder: (_) => questionNotification(context)
+    );
+  }
+
   //et TextEditingController 
   TextEditingController pseudocontroller; 
   TextEditingController titlecontroller;
@@ -272,6 +323,17 @@ class _BlogMechState extends State<BlogMech> {
               },
             )
           ), 
+           Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: IconButton(
+              icon: Icon(Icons.question_answer_outlined),
+              onPressed: () {
+                setState(() {
+                  showsupporudtate();
+                });
+              },
+            ),
+          )
         ],
       ),
       //container qui depend du isLoading bool state

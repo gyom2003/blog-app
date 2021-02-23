@@ -12,6 +12,8 @@ import 'package:blog_flutter_prototype/ScriptReferences/parametrePage.dart';
 import 'package:blog_flutter_prototype/services/crud_sqlite.dart';
 import 'package:flutter_blurhash/flutter_blurhash.dart';
 import 'package:random_string/random_string.dart';
+import 'package:sliding_up_panel/sliding_up_panel.dart';
+
 
 
 
@@ -24,6 +26,8 @@ class DrawerPage extends StatefulWidget {
 class _DrawerPageState extends State<DrawerPage> {
   //Stream theStream; 
   QuerySnapshot querysnapshot; 
+  final dbinstance = Firestore.instance;
+  final pannelController = PanelController();
 
   @override
   void initState() {
@@ -35,32 +39,9 @@ class _DrawerPageState extends State<DrawerPage> {
     }); 
     super.initState(); 
   }
-
-
-   void _imageUploadWithSuccess() {
-    showModalBottomSheet(
-      context: context, 
-      builder: (context) {
-        return Column(
-          children: <Widget> [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: ListTile(
-                leading: Icon(Icons.thumb_up_alt),
-                title: Text("tout les fichiers sont upload avec succès"), 
-                onTap: () {
-                  print("ListTile sans fonctionnalitées"); 
-                },
-              ),
-            ), 
-          ],
-        ); 
-      }
-    ); 
-  }
   
     //pour cloud Firestore, 
-    Widget blogListCoud() {
+    Widget blogListCloud() {
       return Container(
         child: Column(
           children: <Widget> [
@@ -75,7 +56,7 @@ class _DrawerPageState extends State<DrawerPage> {
                     imageURL: querysnapshot.documents[index].data['imageURL'],
                     descriptionBlog:  querysnapshot.documents[index].data['description'],
                     numberofQueryBlog: querysnapshot.documents[index].data['numberofQuery'],
-                    pseudonymeBlog:  querysnapshot.documents[index].data['pseudonyme'],
+                    pseudonymeBlog: querysnapshot.documents[index].data['pseudonyme'],
                     titreBlog:  querysnapshot.documents[index].data['titre'],
                     ); 
                 }) : Container(
@@ -100,72 +81,125 @@ class _DrawerPageState extends State<DrawerPage> {
         case 0: screenCurrentState = Parameterpage(); break;
         case 1 : screenCurrentState = DeleteAlertDialogue(); break; 
       }
-      return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        elevation: 0, 
-        backgroundColor: Colors.transparent,
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget> [
-            RichText(
-              text: TextSpan(
-                children: <TextSpan> [
-                  TextSpan(text: "Flutter", 
-                  style: TextStyle(
-                    fontSize: 22, 
-                  )), 
-                  TextSpan(text: "Blog", 
-                  style: TextStyle(
-                    fontSize: 22, 
-                    color: Colors.lightBlue, 
-                  ))
-                ] 
+      return  Scaffold(
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          elevation: 0, 
+          backgroundColor: Colors.transparent,
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget> [
+              RichText(
+                text: TextSpan(
+                  children: <TextSpan> [
+                    TextSpan(text: "Flutter", 
+                    style: TextStyle(
+                      fontSize: 22, 
+                    )), 
+                    TextSpan(text: "Blog", 
+                    style: TextStyle(
+                      fontSize: 22, 
+                      color: Colors.lightBlue, 
+                    ))
+                  ] 
+                )
               )
-            )
-          ],
-        ), 
-        leading: IconButton(
-          icon: FaIcon(FontAwesomeIcons.alignLeft),
-          onPressed: () {
-            controller.toggle(); 
-          },
-        ), 
-      ),
-      //button add
-      floatingActionButton: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 0.0, 
-        vertical: 20.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget> [
-            FloatingActionButton(
-              child: Icon(Icons.add),
-              onPressed: () {
-                //navigation add post page
-                Navigator.push(context, MaterialPageRoute(
-                  builder: (context) => BlogMech(), 
-                )); 
-              },
-            ),
-          ],
-        ),
-      ),
-      body: Container(
-        child: querysnapshot != null ? 
-        blogListCoud() : 
-        Container(
-          child: Center(
-            child: CircularProgressIndicator(),
+            ],
+          ), 
+          leading: IconButton(
+            icon: FaIcon(FontAwesomeIcons.alignLeft),
+            onPressed: () {
+              controller.toggle(); 
+            },
           ),
-        )
-      )    
+          actions: <Widget> [], 
+        ),
+        //button add
+        floatingActionButton: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 0.0, 
+          vertical: 20.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget> [
+              FloatingActionButton(
+                child: Icon(Icons.add),
+                onPressed: () {
+                  //navigation add post page
+                  Navigator.push(context, MaterialPageRoute(
+                    builder: (context) => BlogMech(), 
+                  )); 
+                },
+              ),
+            ],
+          ),
+        ),
+        //sliding up pannel
+        body: SlidingUpPanel(
+          minHeight: 37,
+          maxHeight: MediaQuery.of(context).size.height,
+          panelBuilder: (scrollController) => buildthePannel(
+            scrollController: scrollController, 
+            panelController: pannelController, 
+          ),
+          body: Container(
+            child: querysnapshot != null ? 
+            blogListCloud() : 
+            Container(
+              child: Center(
+                child: CircularProgressIndicator(),
+              ),
+            )
+          ),
+        )    
     );
-     
      },
    ); 
     
   }
+}
+
+Widget buildthePannel({
+  @required ScrollController scrollController,
+  @required PanelController panelController, 
+}) => DefaultTabController(
+  length: 1,
+  child: Scaffold(
+    appBar: PreferredSize(
+      preferredSize: Size.fromHeight(80),
+        child: GestureDetector(
+          onTap: () => panelController.open(),
+          child: AppBar(
+          title: appbarIconPage(),  
+          centerTitle: true,
+          bottom: TabBar(
+            //deux pages ? 
+            tabs: [
+              Tab(child: Text("Page cachée",
+              style: GoogleFonts.raleway(color: Colors.white),),), 
+            ],
+          ),
+        ),
+      ),
+    ),
+      body: TabBarView(
+      children: [ 
+        TheTabPage(
+          scrollController: scrollController,  
+        ),
+        ]
+      ),
+  ),
+); 
+
+Widget appbarIconPage() {
+  return Container(
+    width: 40,
+    height: 8,
+    decoration: BoxDecoration(
+      color: Colors.black.withOpacity(0.5), 
+      borderRadius: BorderRadius.circular(8), 
+    ),
+  ); 
 }
 
 class BlogTileHome extends StatelessWidget {
@@ -194,15 +228,13 @@ class BlogTileHome extends StatelessWidget {
                 hash: randomAlphaNumeric(5),
                 image: imageURL, 
                 imageFit: BoxFit.cover,
-                duration: Duration(seconds: 5), 
-                curve: Curves.bounceInOut,
+                duration: Duration(seconds: 2), 
+                curve: Curves.bounceIn,
                 ),
             )), 
           Container(
             height: 150,
-            decoration: BoxDecoration(color: Colors.black45.withOpacity(0.4), 
-            borderRadius: BorderRadius.circular(10)
-            ),
+            decoration: BoxDecoration( borderRadius: BorderRadius.circular(13)),
           ), 
           Container(
             width: MediaQuery.of(context).size.width,
@@ -215,7 +247,7 @@ class BlogTileHome extends StatelessWidget {
                 style: GoogleFonts.playfairDisplay(
                   textStyle: TextStyle(
                     fontSize: 22,
-                    color: Colors.black45, 
+                    color: Colors.white30, 
                     fontWeight: FontWeight.w500
                   )
                 ),),
@@ -225,7 +257,7 @@ class BlogTileHome extends StatelessWidget {
                 style: GoogleFonts.playfairDisplay(
                   textStyle: TextStyle(
                     fontSize: 16,
-                     color: Colors.black45, 
+                     color: Colors.white30, 
                     fontWeight: FontWeight.w400
                   )
                 ),),
@@ -235,7 +267,7 @@ class BlogTileHome extends StatelessWidget {
                 Text(descriptionBlog, 
                 style: GoogleFonts.playfairDisplay(
                   textStyle: TextStyle(
-                     color: Colors.black45, 
+                     color: Colors.white30, 
                     fontWeight: FontWeight.w400
                   )
                 ),),
@@ -271,8 +303,6 @@ class _MenuState extends State<Menu> {
   @override
   Widget build(BuildContext context) { 
     Widget mechInstance = BlogCam(); 
-
-
     return Material(
           child: Stack(
             children: <Widget> [

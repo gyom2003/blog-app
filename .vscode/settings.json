@@ -9,5 +9,7 @@
         "activityBar.background": "#222540",
         "titleBar.activeBackground": "#2F3359",
         "titleBar.activeForeground": "#F9F9FC"
-    } //'Fira Code', Consolas, 'Courier New', monospace, 'DejaVu Sans Mono'
+    },
+    "ponicode.testSettings.testLocation.locationType": "Same folder as source file",
+    "ponicode.testSettings.testLocation.path": "{rootDir}/{filePath}/{fileName}.test.{ext}" //'Fira Code', Consolas, 'Courier New', monospace, 'DejaVu Sans Mono'
 }

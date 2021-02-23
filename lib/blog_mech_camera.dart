@@ -24,6 +24,8 @@ class _BlogCamState extends State<BlogCam> {
   int numberofQueryScript = 0;
    
 
+    
+
    //crop notif builder
   cropNotification(BuildContext context) {
     return AlertDialog(
@@ -74,7 +76,50 @@ class _BlogCamState extends State<BlogCam> {
       backgroundColor: Color(0xFF5499C7),
       shape: RoundedRectangleBorder(),  //CircleBorder()
     ); 
-  }
+  } 
+   
+
+   //supprimer ou updtate
+  questionNotification(BuildContext context) {
+    Map<String, String> cloudMapLocal = {
+      "titre": titreonChanged, 
+      "pseudonyme": pseudoonChanged, 
+      "description": descriptiononChanged, 
+      "numberofQuery": numberofQueryScript.toString(), 
+      "imageURL":  "jenepeuxpasaccederaulien", 
+    };
+    return AlertDialog(
+        title: Text("Titre AlertDialog"), 
+        content: SingleChildScrollView(
+          child: ListBody(
+            reverse: false,
+            mainAxis: Axis.vertical, 
+            children: <Widget> [
+              Text("Veut tu update ou supprimer les données ?")
+            ],
+            
+          )
+        ),
+        actions: <Widget> [
+          TextButton(
+            child: Text("supprimer"), 
+            onPressed: () {
+              CloudDB.firebaseReference.deleteData();
+            }
+          ),
+           TextButton(
+            child: Text("updtate"), 
+            onPressed: () {
+              CloudDB.firebaseReference.updtateData(cloudMapLocal); 
+            }
+          ), 
+
+        ],
+
+      ); 
+    }
+
+
   //pouvoir utiliser la galerie et croper
   Future getImagewithcamera() async {
     PickedFile image = await picker.getImage(source: ImageSource.camera); 
@@ -130,6 +175,16 @@ class _BlogCamState extends State<BlogCam> {
     });
   }
 
+  void showsupporudtate() {
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      useSafeArea: true,
+      builder: (_) => questionNotification(context)
+    );
+  }
+
+
   void addtoFirebaseStorageImaGall() async { 
     if (selectedimage != null) { 
 
@@ -159,26 +214,28 @@ class _BlogCamState extends State<BlogCam> {
       "imageURL":  imageURL, 
     }; 
 
-    CloudDB.firebaseReference.addCloudData(cloudMap).then((resultat) => {
-      Navigator.of(context).pop() 
-      //else setState ici ?
-    });  
-    
+    // CloudDB.firebaseReference.addCloudData(cloudMap).then((resultat) => {
+    //   Navigator.of(context).pop() 
+    // });  
 
+    await CloudDB.firebaseReference.addCloudData(cloudMap);
+  
     showDialog(
       context: context, 
         builder: (_) => cropNotification(context), 
-        barrierDismissible: true, 
         useSafeArea: true, 
-    ); 
+        barrierDismissible: true,
 
-      } else {
+    ); 
+    } else {
         setState(() {
            isLoading = false; 
            print("il n'y a pas d'images selectionnées");
         }); 
       }
   }
+
+
 
 
   //et TextEditingController 
@@ -264,7 +321,7 @@ class _BlogCamState extends State<BlogCam> {
         ), 
         actions: <Widget> [
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(5.0),
             child: IconButton(
               icon: Icon(Icons.upload_file),
               onPressed: () {
@@ -272,11 +329,23 @@ class _BlogCamState extends State<BlogCam> {
                   numberofQueryScript++; 
                   print(numberofQueryScript.toString()); 
                 }); 
-                //appeler methode pour Firbase Storage
+                //appeler methode pour Firbase Storage et Cloud Firestore
                 addtoFirebaseStorageImaGall(); 
               },
             )
-          ), 
+          ),
+
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: IconButton(
+              icon: Icon(Icons.question_answer_outlined),
+              onPressed: () {
+                setState(() {
+                  showsupporudtate();
+                });
+              },
+            ),
+          ) 
         ],
       ),
       //container upload image et textfields
@@ -324,6 +393,8 @@ class _BlogCamState extends State<BlogCam> {
                                 color: Colors.black45,),
                               onPressed: (){
                                 print("image picker avec la caméra"); 
+                                getImagewithcamera(); 
+
                               },
                             ),
                           

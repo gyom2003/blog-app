@@ -15,8 +15,8 @@ class InheritWidgetData extends InheritedWidget {
 
   @override 
   bool updateShouldNotify(InheritWidgetData oldWidget) {
-    return true; //return true
+    return true; 
   }
-
- 
 }
+
+

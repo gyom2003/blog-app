@@ -41,6 +41,9 @@ dependencies:
   animated_icon_button: ^0.3.0
   cached_network_image: ^2.4.1
   flutter_blurhash: ^0.5.0
+  hardware_buttons: ^1.0.0
+  sliding_up_panel: ^1.0.2
+  device_preview: ^0.5.5
   firebase_core: 
   firebase_storage: 
   cloud_firestore: 
